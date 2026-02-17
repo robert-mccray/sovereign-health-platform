@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # 1. Simulated AWS (LocalStack)
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"  # s3/iam gateway
+    environment:
+      - SERVICES=s3,iam,sts
+      - DEBUG=1
+    volumes:
+      - "./infra/localstack_init:/etc/localstack/init/ready.d"
+
+  # 2. Simulated Azure Vault (HashiCorp Vault)
+  vault:
+    image: vault:1.13.1
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=root 
+      - VAULT_ADDR=http://0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK  # FIXED: Added space after dash
+
+  # 3. Simulated Identity (Keycloak)
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    command: start-dev 
+    ports:
+      - "8080:8080" # FIXED: Mapped external 8080 to internal 8080
+    environment:
+      - KEYCLOAK_ADMIN=admin 
+      - KEYCLOAK_ADMIN_PASSWORD=admin # FIXED: Corrected spelling of PASSWORD
