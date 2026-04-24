@@ -1,5 +1,11 @@
 version: '3.8'
 
+# =====================================================================
+# ⚠️ ENTERPRISE NOTE: This compose file is strictly for LOCAL DevSecOps 
+# simulation. Production deployments utilize managed Azure Key Vault and 
+# Azure Entra ID (OIDC) with zero hardcoded credentials.
+# =====================================================================
+
 services:
   # 1. Simulated AWS (LocalStack)
   localstack:
